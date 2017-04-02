@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Request Forms</title>
+        <link rel="stylesheet" type="text/css" href="/css/uikit.min.css">
+        <link rel="stylesheet" type="text/css" href="/css/aakit.css">
+        <link rel="stylesheet" type="text/css" href="/css/app.css">
+        <link rel="stylesheet" href="/css/components/notify.css">
+        <link rel="stylesheet" href="/css/components/datepicker.css">        
+        <link rel="stylesheet" href="/css/components/autocomplete.css">
+        <script src="/js/jquery-3.1.1.min.js"></script>
+        <script src="/js/uikit.min.js"></script>
+        <script src="/js/aakit.js"></script>
+        <script src="/js/components/notify.js"></script>
+        <script src="/js/components/datepicker.js"></script>
+        <script src="/js/components/timepicker.js"></script>
+        <script src="/js/components/autocomplete.js"></script>
+        <script src="/js/app/applicationConstants.js"></script>        
+        <script src="/js/app/forms.js"></script>
+        <style type="text/css">
+        	.container-wo-shadow {
+        		border-radius: 0px 10px 10px 10px;
+				-moz-border-radius: 0px 10px 10px 10px;
+				-webkit-border-radius: 0px 10px 10px 10px;
+				border: 1px solid #000000;
+        	}
+        	#selectedListTable, #forms-container {    		
+        		width: 90%;
+        		margin: 0 auto;        		
+        	}        	
+			.courseList-container {
+				height: 300px;
+				overflow: auto;
+			}
+			::-webkit-scrollbar
+			{
+			  width: 12px;  /* for vertical scrollbars */
+			  height: 12px; /* for horizontal scrollbars */
+			}
+			::-webkit-scrollbar-track
+			{
+			  background: rgba(0, 0, 0, 0.1);
+			}
+			::-webkit-scrollbar-thumb
+			{
+			  background: rgba(0, 0, 0, 0.5);
+			}
+			#forms-container div[id^='rowId_'] {				
+				padding: 5px;			
+			}
+			.form-title {
+				padding-left: 10px;
+			}
+			.list-type1{
+				width:90%;
+				margin:0 auto;
+			}
+
+			.list-type1 ol{
+				counter-reset: li;
+				list-style: none;
+				*list-style: decimal;										
+			}
+
+			.list-type1 ol ol{
+				margin: 0 0 0 2em;
+			}
+
+			.list-type1 a{	
+				width:80%;				
+				position: relative;
+				display: block;
+				padding: .4em .4em .4em 2em;
+				*padding: .4em;
+				margin: .5em 0;
+				background: #93C775;
+				color: #000;
+				text-decoration: none;
+				-moz-border-radius: .3em;
+				-webkit-border-radius: .3em;
+				border-radius: 10em;
+				transition: all .2s ease-in-out;
+			}
+
+			.list-type1 a:hover{
+				background: #d6d4d4;
+				text-decoration:none;
+				transform: scale(1.05);
+			}
+
+			.list-type1 a:before{
+				content: counter(li);
+				counter-increment: li;
+				position: absolute;
+				left: -1.3em;
+				top: 50%;
+				margin-top: -1.3em;
+				background:#93C775;
+				height: 2em;
+				width: 2em;
+				line-height: 2em;
+				border: .3em solid #fff;
+				text-align: center;
+				font-weight: bold;
+				-moz-border-radius: 2em;
+				-webkit-border-radius: 2em;
+				border-radius: 2em;
+				color:#FFF;
+			}		
+
+			.course div{				
+				position: relative;
+				display: block;
+				padding: .4em .4em .4em 2em;
+				*padding: .4em;
+				margin: .5em 0;
+				background: #93C775;
+				color: #000;
+				text-decoration: none;
+				-moz-border-radius: .3em;
+				-webkit-border-radius: .3em;
+				border-radius: 10em;
+				transition: all .2s ease-in-out;
+			}
+
+			.course div:hover{
+				background: #d6d4d4;
+				text-decoration:none;				
+			}
+
+			.course div:before{				
+				position: absolute;
+				left: -1.3em;
+				top: 50%;
+				margin-top: -1.3em;
+				background:#93C775;
+				height: 2em;
+				width: 2em;
+				line-height: 2em;
+				border: .3em solid #fff;
+				text-align: center;
+				font-weight: bold;
+				-moz-border-radius: 2em;
+				-webkit-border-radius: 2em;
+				border-radius: 2em;
+				color:#FFF;
+			}			
+        </style>
+    </head>
+    <body>        	
+    	<div class="uk-margin-large-top uk-width-medium-8-10 uk-container-center">                      
+                <div class="uk-grid">
+                    <div class="uk-width-medium-3-10">
+                        <div class="uk-width-1-1 uk-text-center">
+	                    <h2 class="aa-back-glass">My Options</h2>
+	                </div> 
+	                <ul class="uk-tab uk-tab-left uk-width-1-1" id="options" data-uk-switcher="{connect:'#optionsList', animation: 'fade'}">
+	                    <li class="uk-text-center"><a href=""><i class="uk-icon-small uk-icon-newspaper-o"></i><br/>Create a New Form</a></li>
+	                    <li class="uk-text-center"><a id="forms" href=""><i class="uk-icon-small uk-icon-server"></i><br/>Forms</a></li>
+	                </ul>
+                    </div>
+	                <div class="uk-width-medium-7-10">
+	                    <ul id="optionsList" class="uk-switcher">
+				    		<li>	
+					    		<div class="uk-grid uk-tab-center">
+					    			<div class="uk-width-1-1">					    			
+									    <ul class="uk-tab" data-uk-tab="{connect:'#subOptionsList', animation: 'fade'}">
+									    	<li><a href="">Basic</a></li>
+										    <li><a href="">Courses</a></li>
+										    <li><a href="">Additional Information</a></li>									    
+									    </ul>
+								    </div>
+								</div>
+							    <div class="uk-grid">								    
+								    <div class="uk-width-1-1">
+									    <ul id="subOptionsList" class="uk-switcher">
+											<li>
+												<article class = "uk-comment container-bottom-shadow">	
+													<div class="uk-grid">
+														<div class="uk-margin-small uk-width-medium-1-1 uk-text-center">	
+																<input id="form_title" name="form_title" type="text" placeholder="Title" class="uk-width-medium-9-10"/>
+														</div>	
+													</div>													
+													<hr/>
+													<div class = 'uk-grid'>
+														<div class="uk-width-medium-4-10 uk-margin-large-left">
+															<label for="pref_count">Number of Preferences: </label>
+														</div>
+														<div class="uk-width-medium-5-10">
+															<input id="pref_count" name="pref_count" type="number" min="0" value="0"/>
+														</div>
+													</div>
+													<div class = 'uk-grid'>
+														<div class="uk-width-medium-4-10 uk-margin-large-left">
+															<label for="start_date">Start Date: </label> 
+														</div>
+														<div class="uk-width-medium-5-10">
+															<input id="start_date" name="start_date" class="uk-width-medium-1-2" placeholder="Date" type="text"/>			
+															<input id="start_time" name="start_time" class="uk-width-medium-1-2" placeholder="Time" type="text"/>
+														</div>
+													</div>
+													<div class = 'uk-grid'>
+														<div class="uk-width-medium-4-10 uk-margin-large-left">
+															<label for="end_date">End Date: </label> 
+														</div>
+														<div class="uk-width-medium-5-10">
+															<input id="end_date" name="end_date" class="uk-width-medium-1-2" placeholder="Date" type="text"/>											
+															<input id="end_time" name="end_time" class="uk-width-medium-1-2" placeholder="Time" type="text"/>
+														</div>
+													</div>		
+													<br/>
+												</article>
+											</li>
+										    <li>
+										    	<article class = "uk-comment courseList-container container-bottom-shadow">				<div class="uk-margin-small uk-text-center">
+														<input id="course_name" name="course_name" type="text" list="courses" class="uk-width-medium-7-10" placeholder="Select a Course"/>
+						            					<datalist id="courses">
+															<% courses.forEach(function (course) { %>
+																<option data-value="<%= course.COURSE_ID %>" value="<%= course.COURSE_CODE + ' - ' + course.TITLE %>"></option>		
+															<% }); %>
+														</datalist>												
+														&nbsp;&nbsp;&nbsp;
+														<button id="addCourse" name="addCourse" class="button">ADD</button>
+													</div>
+													<h4 class="uk-text-center">List of selected courses</h4>
+				    								<table id="selectedListTable" align="center"></table>
+				    								<br/>
+												</article>
+										    </li>
+										    <li>										    
+										    	<!--<article class="uk-comment container-bottom-shadow">
+										    		<div class="uk-grid">
+											    		<div class="uk-width-medium-1-1">
+											    			<div class="uk-text-center">
+											    				<input id="short_desc" name="short_desc" type="text" placeholder="Short Description" class="uk-width-medium-9-10"/>
+											    			</div>												    		
+														</div>
+										    		</div>
+										    		<div class="uk-grid">
+											    		<div class="uk-width-medium-1-1">
+											    			<div class="uk-text-center">
+											    				<textarea id="long_desc" name="long_desc" placeholder="Long Description" class="uk-width-medium-9-10"></textarea>
+											    			</div>												    		
+														</div>										    			
+										    		</div>
+										    		<div class="uk-grid">
+											    		<div class="uk-width-medium-1-1">
+											    			<div class="uk-margin-large-left">
+													    		<label>Expected Answer Type: </label>
+													    		<select>
+													    			<option value="0">-Select-</option>
+																	<option value="text">Text</option>
+																	<option value="boolean">Yes/No</option>
+																	<option value="multCh">Multiple Choice</option>
+																</select>
+															</div>	
+														</div>										    			
+										    		</div>
+										    	</article>
+										    	<br/>
+										    	<article>
+										    		<div class="additional-info-container">
+
+										    		</div>
+										    	</article>-->
+										    </li>										    
+									    </ul>											    
+								    </div>
+							    </div>
+							    <div class="uk-grid">
+							    	<div class="uk-width-medium-1-1 uk-text-center">		
+							    		<input type="submit" id="createForm" name="createForm" value="CREATE" class="button uk-margin-small-bottom"/>		    
+							    	</div>
+							    </div>
+								<br/>																
+				    		</li>
+				    		<li>
+				    			<div class="uk-width-medium-1-1">
+				    				<article class = "uk-comment container-bottom-shadow">										
+										<div id="forms-container">						
+										</div>										    									
+									</article>
+				    			</div>
+				    		</li>
+						</ul>						
+	                </div>
+	            </div>    	
+	        </div>			    
+    </body>
+</html>

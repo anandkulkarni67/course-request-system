@@ -1,0 +1,27 @@
+{
+  "name": "course-request-system",
+  "version": "1.0.0",
+  "description": "Course request form generation and submission system.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anandkulkarni67/course-request-system.git"
+  },
+  "author": "Anand Kulkarni",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anandkulkarni67/course-request-system/issues"
+  },
+  "homepage": "https://github.com/anandkulkarni67/course-request-system#readme",
+  "dependencies": {
+    "async": "^2.1.5",
+    "body-parser": "^1.16.1",
+    "crypto": "0.0.3",
+    "ejs": "^2.5.6",
+    "express": "^4.13.3",
+    "oracledb": "^1.12.2"
+  }
+}
