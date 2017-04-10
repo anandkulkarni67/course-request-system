@@ -1,5 +1,4 @@
-$(function() {    			
-    
+$(function() {    			    
 });
 
 function submitForm(formId) {
@@ -28,7 +27,7 @@ function getPreferences(formId) {
 	for(counter = 0; counter < preferences.length; counter++) {		
 		var dataUID = $(preferences).eq(counter).data('uid').split("_");		
 		preferenceList.push({
-			course_code: dataUID[0],
+			courseCode: dataUID[0],
 			preference: dataUID[1]
 		});		
 	}

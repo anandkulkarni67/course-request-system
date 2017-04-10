@@ -135,7 +135,8 @@ function displayForms() {
 					row += "</div>";					
 					row += "</div>";					
 					row += "</header>";
-				    row += "<div id = 'form-details-container-" + rowId + "' class='uk-comment-body uk-margin-remove courseList-container'>";					
+				    row += "<div id = 'form-details-container-" + rowId + "' class='uk-comment-body uk-margin-remove'>";					
+				    row += "<div class='courseList-container'>";
 				    row += "<hr class='uk-divider-icon'>";
 					row += "<div class='list-type1'>"
 					row += "<ol>";
@@ -144,11 +145,12 @@ function displayForms() {
 					});
 					row += "</ol>";
 					row += "</div>";
+					row += "</div>";
 					row += "<hr class='uk-divider-icon'>";
 					row += "<div class='uk-text-center'>";
 				 	row += "<label for='pref_count'> Number of Preferences : " + form.NO_PREFERENCES + "</lable>";
-				 	row += "</div>";
-					row += "</div>";
+				 	row += "</div>";					
+					row += "</div>";					
 				    row += "</article>";				    				    
 			    $("#forms-container").append(row);
 			});

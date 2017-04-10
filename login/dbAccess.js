@@ -14,18 +14,16 @@ module.exports.getUserDetails = function(username, passowrd) {
 					db.doRelease(connection)
 						.then ( function (op){
 							return resolve(user);
-						}).catch( function (error) {
-							console.log(error);
-							return reject(error);
+						}).catch( function (error) {							
+							reject(error);
 						});
 				} else {
 					return resolve(null);
 				}
 			}).catch(function (error) {
-				console.log(error);
+				rejecte (error);
 			});
-		}).catch( function (error) {
-			console.log(error);
+		}).catch( function (error) {			
 			reject(error);
 		});	
 	});	

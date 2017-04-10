@@ -2,6 +2,7 @@
 var express = require('express');
 var bodyParser = require('body-parser')
 var ejs = require('ejs');
+var session = require('express-session');
 var oracledb = require('oracledb');
 
 // local imports
@@ -19,7 +20,11 @@ app.set('view engine', 'ejs');
 app.engine('html', ejs.renderFile);
 app.set('views', __dirname + '/public');
 app.use(express.static(__dirname + '/public'));
-
+app.use(session({
+    secret:"testSecret",
+    resave: true,
+    saveUninitialized: true
+}));
 app.listen(appConstants.PORT, function () {
 	console.log('Server started!');
 });
@@ -44,6 +49,4 @@ oracledb.createPool({
     require('./util/oracleUtil.js')(pool);
 });
 
-var formsModule = require('./forms')(app);
-var loginModule = require('./login')(app);
-var loginModule = require('./students')(app);
+require('./router.js')(app);

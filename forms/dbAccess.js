@@ -2,7 +2,7 @@ var db = require('../util/oracleUtil');
 var oracledb    = require('oracledb');
 var async = require('async');
 
-module.exports.getCourseDetails = function(callback) {
+var retrieveCourseDetails = function() {
 	var query = "SELECT course_id, course_code, title FROM COURSES";
 	return new Promise( function (resolve, reject) {
 		db.doConnect().then( function (connection) {
@@ -12,17 +12,16 @@ module.exports.getCourseDetails = function(callback) {
 						.then ( function (op){
 							return resolve(result.rows);
 						}).catch( function (error) {
-							return reject(error);
+							return reject("ERROR: retrieveCourseDetails(): ", error);
 					});
 				});
 		}).catch( function (error) {
-			reject(error);
-		});	
-	});	
+			return reject("ERROR: retrieveCourseDetails(): ", error);
+		});
+	});
 }
 
-module.exports.createRequestForm = function(callback) {
-	var formDetails = arguments[0];
+var createRequestForm = function(formDetails) {	
 	return new Promise( function (resolve, reject) {
 		db.doConnect().then( function (connection) {
 			async.waterfall([
@@ -47,21 +46,27 @@ module.exports.createRequestForm = function(callback) {
 						});					
 				},
 				function createCourseMappings(form_id, callback) {
-					var createCourseMappingQuery = "INSERT INTO form_courses VALUES(:fid, :cid)";					
-					formDetails.courseList.forEach(function(course_id) {
-						db.doExecute(
-							connection, createCourseMappingQuery
-							, {
-								fid: form_id,
-								cid: course_id
-							}).then(function (result) {
-								// logger
-								console.log(form_id + '-' + course_id + 'mapping created successfully.');
-							}).catch( function (error) {
-								callback(error, null);
-							});				
+					var createCourseMappingQuery = "INSERT INTO form_courses VALUES(:fid, :cid)";
+					async.forEach(formDetails.courseList ,
+						function (course_id, callback) {																
+							db.doExecute(
+								connection, createCourseMappingQuery
+								, {
+									fid: form_id,
+									cid: course_id
+								}).then(function (result) {
+									callback();
+								}).catch( function (error) {
+									callback(error);
+								});											
+						}, 
+						function(error) {
+							if(error) {
+								callback(error);								
+							} else {					
+								callback(null, 'success');
+							}
 					});
-					callback(null, 'success');
 				}
 				], 
 				function (error, result) {
@@ -69,20 +74,17 @@ module.exports.createRequestForm = function(callback) {
 						db.doRollback(connection).then( function (result) {
 							db.doRelease(connection);
 						}).then (function (result) {
-							// logger
-							console.log(result);
+							reject(error);
 						}).catch(function(error) {
-							console.log(error);
+							reject(error);
 						});
-					} else {
-						console.log(result);
+					} else {						
 						db.doCommit(connection).then( function (result) {
 							db.doRelease(connection);
-						}).then (function (result) {
-							// logger
-							console.log(result);
+						}).then (function (result) {							
+							resolve('success');
 						}).catch(function(error) {
-							console.log(error);
+							reject(error);
 						});
 					}					
 				}
@@ -91,7 +93,7 @@ module.exports.createRequestForm = function(callback) {
 	});
 }
 
-module.exports.getAllForms = function() {	
+var retreiveAllForms = function() {	
 	return new Promise( function (resolve, reject) {		
 		async.waterfall([
 			function fetchForms(callback) {
@@ -111,7 +113,6 @@ module.exports.getAllForms = function() {
 				});
 			},
 			function fetchCourses(forms, callback) {
-				// check if entries is empty array/object.				
 				consolidateInformation(forms).then( function (result) {
 					callback(null, result);
 				}).catch(function (error) {
@@ -120,11 +121,9 @@ module.exports.getAllForms = function() {
 			}
 			], 
 			function (error, result) {
-				if(error) {
-					console.log('error');
+				if(error) {					
 					reject(error);
 				} else {
-
 					resolve(result);
 				}					
 			}
@@ -132,8 +131,7 @@ module.exports.getAllForms = function() {
 	});	
 }
 
-module.exports.removeForm = function (form_id) {
-	console.log('Form ID to be removed is : ' + form_id);
+var removeForm = function (form_id) {
 	var query = "DELETE FROM FORMS WHERE FORM_ID =: form_id";
 	return new Promise( function (resolve, reject) {
 		db.doConnect().then( function (connection) {
@@ -160,7 +158,7 @@ module.exports.removeForm = function (form_id) {
 	});	
 }
 
-function consolidateInformation(forms) {			
+function consolidateInformation(forms) {	
 	return new Promise( function(resolve, reject) {
 		async.forEach(forms ,
 		function (form, callback) {					
@@ -180,16 +178,20 @@ function consolidateInformation(forms) {
 							});
 						});
 				}).catch( function (error) {
-					reject(error);
+					callback(error);
 				});					
 			}, 
 			function(error) {
 				if(error) {
 					reject(error);
-				} else {					
+				} else {
 					resolve(forms);
 				}
 		});
 	});
-
 }
+
+module.exports.retrieveCourseDetails  = retrieveCourseDetails;
+module.exports.createRequestForm  = createRequestForm;
+module.exports.retreiveAllForms   = retreiveAllForms;
+module.exports.removeForm = removeForm;
