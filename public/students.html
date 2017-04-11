@@ -81,11 +81,13 @@
 								            	<% var i = 0;
 												for(i = 0; i < no_prefs; i++) { %>													
 												   	<td class="uk-text-center">
-												   		<% 	if(course.PREFERENCE === i + 1) { %>
-												   				<input type="radio" name="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>" data-uid="<%=course.COURSE_CODE%>_<%=i+1%>" checked />
+												   		<% 	if(typeof course.PREFERENCE !== 'undefined') {
+												   				if(course.PREFERENCE === i + 1) { %>
+												   				<input type="radio" id="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>_<%=i+1%>" name="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>" data-uid="<%=course.COURSE_CODE%>_<%=i+1%>" checked onclick="resetPrefs(this)" />
 													   		<% } else { %>
-													   			<input type="radio" name="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>" data-uid="<%=course.COURSE_CODE%>_<%=i+1%>" />
-													   	<% } %>
+													   			<input type="radio" id="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>_<%=i+1%>" name="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>" data-uid="<%=course.COURSE_CODE%>_<%=i+1%>" onclick="resetPrefs(this)" />
+													   		<% }
+													   		} %>
 												   	</td>
 												<% } %>
 								        	</tr>
