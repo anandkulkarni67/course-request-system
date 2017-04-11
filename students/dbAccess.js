@@ -26,16 +26,16 @@ module.exports.getAllForms = function(userId) {
 			},
 			function fetchCourses(formList, callback) {
 				// check if entries is empty array/object.				
-				consolidateInformation(formList).then( function (result) {
-					callback(null, result);
-				}).catch(function (error) {
-					callback(error, null);
-				});
+				consolidateInformation(formList)
+					.then( function (result) {
+						callback(null, result);
+					}).catch(function (error) {
+						callback(error, null);
+					});
 			}
 			], 
 			function (error, result) {
-				if(error) {
-					console.log('error');
+				if(error) {					
 					reject(error);
 				} else {
 
@@ -68,8 +68,6 @@ function consolidateInformation(formList) {
 											userId: userId,
 											formId: form.FORM_ID
 										}).then( function (result) {
-											console.log('Exists ?');
-											console.log(result.rows[0]);											
 											if(result.rows.length === 1) {
 												callback(null, {
 													isNew: false,
@@ -87,8 +85,7 @@ function consolidateInformation(formList) {
 											callback(error, null);
 										});
 								},
-								function registerStudentPreferences(formSubmissionStatus, callback) {
-									console.log(formSubmissionStatus);
+								function registerStudentPreferences(formSubmissionStatus, callback) {									
 									if(formSubmissionStatus.isNew) {
 										formSubmissionStatus.courses.forEach(function (course) {
 											course.PREFERENCE = -1;
@@ -107,21 +104,22 @@ function consolidateInformation(formList) {
 													formId: form.FORM_ID,
 													courseCode: course.COURSE_CODE
 												}).then(function (result) {
-													console.log(result);
-													course.PREFERENCE = result.rows[0].PREFERENCE;	
+													if(result.rows.length === 1) {
+														course.PREFERENCE = result.rows[0].PREFERENCE;
+													} else {
+														course.PREFERENCE = -1;
+													}
 													courseWPref.push(course);
 													callback();													
-												}).catch( function (error) {
-													console.log(error);
+												}).catch( function (error) {													
 													callback(error);
 												});	
 											}, function (error) {
 												if(error) {
-													console.log(error);
+													callback(error, null);
 												} else {
 													form.courses = courseWPref;
-													form.SUBMISSION_DATE = formSubmissionStatus.submissionDate;
-													console.log(form);
+													form.SUBMISSION_DATE = formSubmissionStatus.submissionDate;													
 													callback(null, form);
 												}
 											});										
@@ -130,10 +128,11 @@ function consolidateInformation(formList) {
 							], 
 							function (error, result) {
 								if(error) {									
-									console.log(error);									
+									callback(error);
 								}
 								db.doRelease(connection)
-									.then ( function (op){									
+									.then ( function (op){	
+										console.log(op);								
 										callback();
 									}).catch( function (error) {
 										callback(error);
@@ -143,8 +142,7 @@ function consolidateInformation(formList) {
 					});
 			}, 
 			function(error) {
-				if(error) {
-					console.log(error);
+				if(error) {					
 					reject(error);
 				} else {					
 					resolve(formList.forms);
@@ -153,13 +151,7 @@ function consolidateInformation(formList) {
 	});
 }
 
-function initializeDefaultPrefs(callback) {
-
-}
-
 module.exports.submitForm = function(userPreferences) {
-	console.log('Inside dbAccss');
-	console.log(userPreferences);
 	return new Promise( function (resolve, reject) {
 		db.doConnect().then( function (connection) {
 			async.waterfall([
@@ -171,14 +163,11 @@ module.exports.submitForm = function(userPreferences) {
 							userId: userPreferences.userId,
 							formId: userPreferences.formId
 						}).then( function (result) {
-							console.log('Exists ?');
-							console.log(result.rows[0]);
 							var exists = result.rows[0].CNT;
 							if(exists) {
 								db.doExecute(
 								connection, "UPDATE FORM_SUBMISSION SET SUBMISSION_DATE = sysdate"
-								, {}).then(function (result) {
-									console.log(result);
+								, {}).then(function (result) {									
 									callback(null, {
 										isNew: false
 									});
@@ -191,8 +180,7 @@ module.exports.submitForm = function(userPreferences) {
 								, {
 									userId: userPreferences.userId,
 									formId: userPreferences.formId
-								}).then(function (result) {
-									console.log(result);
+								}).then(function (result) {									
 									callback(null, {
 										isNew: true
 									});
@@ -210,9 +198,7 @@ module.exports.submitForm = function(userPreferences) {
 						studentPreferenceQuery = "INSERT INTO STUDENT_PREFERENCES VALUES(:userId, :formId, :courseCode, :preference)";						
 					} else {
 						studentPreferenceQuery = "UPDATE STUDENT_PREFERENCES SET PREFERENCE = :preference WHERE USER_ID = :userId AND FORM_ID = :formId AND COURSE_CODE = :courseCode";						
-					}
-					console.log('form submission status: ');
-					console.log(formSubmissionStatus);
+					}					
 					userPreferences.preferences.forEach(function(preference) {
 					db.doExecute(
 						connection, studentPreferenceQuery
@@ -235,20 +221,17 @@ module.exports.submitForm = function(userPreferences) {
 						db.doRollback(connection).then( function (result) {
 							db.doRelease(connection);
 						}).then (function (result) {
-							// logger
-							console.log(result);
+							reject(error);
 						}).catch(function(error) {
-							console.log(error);
+							reject(error);
 						});
-					} else {
-						console.log(result);
+					} else {						
 						db.doCommit(connection).then( function (result) {
 							db.doRelease(connection);
 						}).then (function (result) {
-							// logger
-							console.log(result);
+							resolve(result);
 						}).catch(function(error) {
-							console.log(error);
+							reject(error);
 						});
 					}					
 				}

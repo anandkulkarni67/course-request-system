@@ -29,7 +29,7 @@ function getPreferences(formId) {
 		preferenceList.push({
 			courseCode: dataUID[0],
 			preference: dataUID[1]
-		});		
+		});
 	}
 	return preferenceList;
 }
