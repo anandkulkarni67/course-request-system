@@ -108,6 +108,7 @@ function displayForms() {
 					row += "<a title='Remove' data-uk-tooltip='{pos:'bottom'}' class='uk-icon-close uk-align-right' onclick = 'removeForm("+ rowId +")'></a>";
 				 	row += "<a title='Expand/Collapse' data-uk-tooltip='{pos:'bottom'}' class='uk-icon-expand uk-align-right' id='form-details-toggle-" + rowId + "'></a>";
 				 	row += "<a title='Copy' data-uk-tooltip='{pos:'bottom'}' class='uk-icon-copy uk-align-right' onclick ='copyForm(" + rowId + ")'></a>";				 	
+				 	row += "<a title='dashboard' data-uk-tooltip='{pos:'bottom'}' class='uk-icon-dashboard  uk-align-right' href='http://localhost:3000/dashboard?formId=" + form.FORM_ID + "'></a>";
 				 	row += "</div>";
 					row += "<div class='uk-comment-meta'>";
 					row += "<div>";
@@ -178,6 +179,14 @@ function displayForms() {
 		    });
 		}
     });    
+}
+
+function openDashBoard(formId) {
+	$.post("http://localhost:3000/createForm", data,
+	    function(data, status){
+
+	    }
+	);
 }
 
 function alreadyExists(rowId) {

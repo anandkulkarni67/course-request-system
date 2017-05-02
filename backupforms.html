@@ -16,8 +16,7 @@
         	function bindEvents() {        	
 	            $("#addCourse").on("click", function() {
 	            	var courseName = $("#course_name").val();	            	
-					var cid = document.querySelector("#courses option[value='"+ courseName +"']").dataset.value;
-					alert(cid + '-' + courseName);
+					var cid = document.querySelector("#courses option[value='"+ courseName +"']").dataset.value;					
 	            	var row = "<tr id='" + cid + "' >";
                     row += "<td>";                   
                     row += "<div class='search-data-div' >";

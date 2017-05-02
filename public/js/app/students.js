@@ -1,8 +1,7 @@
 $(function() {    			    
 });
 
-function submitForm(formId) {
-	alert(formId);
+function submitForm(formId) {	
 	var counter = 0;
 	var preferences = getPreferences(formId);
 	var data = {

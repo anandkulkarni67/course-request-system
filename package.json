@@ -23,6 +23,7 @@
     "ejs": "^2.5.6",
     "express": "^4.13.3",
     "express-session": "^1.15.2",
-    "oracledb": "^1.12.2"
+    "oracledb": "^1.12.2",
+    "socket.io": "^1.7.3"
   }
 }

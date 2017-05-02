@@ -5,13 +5,18 @@ var ejs = require('ejs');
 var session = require('express-session');
 var oracledb = require('oracledb');
 
+var app = express();
+
+var http = require('http').Server(app);
+var socket = require('socket.io')(http);
+
 // local imports
 var appConstants = require('./applicationConstants');
 var dbconfig = require('./config/oracleconfig');
 
 oracledb.outFormat = oracledb.ARRAY;
 var PORT = process.env.PORT || 3000;
-var app = express();
+
 
 app.use(bodyParser.urlencoded({ 
 	extended: true 
@@ -25,8 +30,12 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
-app.listen(appConstants.PORT, function () {
-	console.log('Server started!');
+// app.listen(appConstants.PORT, function () {
+// 	console.log('Server started!');
+// });
+
+http.listen(appConstants.PORT, function() {
+    console.log('Server started!');
 });
 
 // create oracle connection pool
@@ -49,4 +58,8 @@ oracledb.createPool({
     require('./util/oracleUtil.js')(pool);
 });
 
-require('./router.js')(app);
+socket.on('connection', function () {
+    console.log('A new connection is succesfully created.');
+});
+
+require('./router.js')(app, socket);
