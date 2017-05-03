@@ -26,7 +26,7 @@ var createRequestForm = function(formDetails) {
 		db.doConnect().then( function (connection) {
 			async.waterfall([
 				function createFormEntry(callback) {
-					var createFormQuery = "BEGIN :form_id := createForm(:title, :pref_count, :start_time, :end_time); END;";
+					var createFormQuery = "BEGIN :form_id := PACKAGE_CRS.create_form(:title, :pref_count, :start_time, :end_time); END;";
 					formDetails.form_id = { 
 						dir: oracledb.BIND_OUT, 
 						type: oracledb.INTEGER
@@ -132,7 +132,7 @@ var retreiveAllForms = function() {
 }
 
 var removeForm = function (form_id) {
-	var query = "DELETE FROM FORMS WHERE FORM_ID =: form_id";
+	var query = "BEGIN PACKAGE_CRS.delete_form(:form_id); END;";
 	return new Promise( function (resolve, reject) {
 		db.doConnect().then( function (connection) {
 			db.doExecute(
