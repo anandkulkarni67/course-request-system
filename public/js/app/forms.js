@@ -25,27 +25,29 @@ function bindEvents() {
 		updateCourseSelection(val, cid);
     });
     $("#createForm").on("click", function(event) {
-    	event.preventDefault();	            	
-    	var selectedCourseList = getCommaSperatedCourseList();    	
-		var data = {
-			title: $("#form_title").val(),
-			courses: selectedCourseList,
-			preferenceCount: $("#pref_count").val(),
-			start_date: $("#start_date").val(),
-			start_time: $("#start_time").val(),
-			end_date: $("#end_date").val(),
-			end_time: $("#end_time").val()
-		};
-		$.post("http://localhost:3000/createForm", data,
-		    function(data, status){
-		    	if(status === 'success') {
-		    		clearForm();
-					UIkit.notify('<i class=\'uk-icon-small uk-icon-check\'></i> Form creation is COMPLETE.', {status:'success', pos:'bottom-right'});
-		    	} else {
-		    		UIkit.notify('<i class=\'uk-icon-small uk-icon-close\'></i> There was an error.', {status:'danger', pos:'bottom-right'});
-		    	}		        
-		    }
-		);
+    	event.preventDefault();
+    	var selectedCourseList = getCommaSperatedCourseList();
+    	if(validateForm(selectedCourseList)) {	    	
+			var data = {
+				title: $("#form_title").val(),
+				courses: selectedCourseList,
+				preferenceCount: $("#pref_count").val(),
+				start_date: $("#start_date").val(),
+				start_time: $("#start_time").val(),
+				end_date: $("#end_date").val(),
+				end_time: $("#end_time").val()
+			};
+			$.post("http://localhost:3000/createForm", data,
+			    function(data, status){
+			    	if(status === 'success') {
+			    		clearForm();
+						UIkit.notify('<i class=\'uk-icon-small uk-icon-check\'></i> Form creation is COMPLETE.', {status:'success', pos:'bottom-right'});
+			    	} else {
+			    		UIkit.notify('<i class=\'uk-icon-small uk-icon-close\'></i> There was an error.', {status:'danger', pos:'bottom-right'});
+			    	}		        
+			    }
+			);
+		}
   	});
   	$("#forms").on("click", function(event) {
     	event.preventDefault();
@@ -267,4 +269,30 @@ function copyForm(fid) {
 	} else {
 		alert('Form details not found !');
 	}
+}
+
+function validateForm(selectedCourseList){
+	var elementsMap = new Object();
+	var validate = true;
+	elementsMap['pref_count'] = 'Preference Count';
+	elementsMap['start_date'] = 'Start Date';
+	elementsMap['start_time'] = 'Start Time';
+	elementsMap['end_date'] = 'End Date';
+	elementsMap['end_time'] = 'End Time';
+	elementsMap['form_title'] = 'Form Title';
+	for(var key in elementsMap) {		
+		if($('#' + key).val() == "") {
+			UIkit.notify('<i class=\'uk-icon-small uk-icon-close\'></i> ' + elementsMap[key] + ' can not be empty.', {status:'danger', pos:'bottom-right'});
+			validate = false;
+		}
+	}
+	if(selectedCourseList == "") {
+		UIkit.notify('<i class=\'uk-icon-small uk-icon-close\'></i> Please add 1 or more courses to the form.', {status:'danger', pos:'bottom-right'});
+		validate = false;
+	}
+	if(getSelectedCourseList().length < $('#pref_count').val()) {
+		UIkit.notify('<i class=\'uk-icon-small uk-icon-close\'></i> Please add at least minimum number of courses to match preference count. ', {status:'danger', pos:'bottom-right'});		
+		validate = false;
+	}
+	return validate;
 }
