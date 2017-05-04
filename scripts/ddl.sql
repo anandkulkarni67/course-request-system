@@ -10,7 +10,7 @@ CREATE TABLE COURSES
 	(
 		course_id CHAR(5) PRIMARY KEY CHECK (course_id LIKE 'c%'),
 		dept_code VARCHAR2(4) NOT NULL,
-		course_code CHAR(4) NOT NULL,
+		course_code VARCHAR(4) NOT NULL,
 		title VARCHAR2(100) NOT NULL,
 		capacity NUMBER
 	);
@@ -56,7 +56,7 @@ CREATE TABLE STUDENT_PREFERENCES
 	(
 		user_id NUMBER REFERENCES users ON DELETE CASCADE,
 		form_id NUMBER REFERENCES forms ON DELETE CASCADE,   
-		course_code CHAR(4) NOT NULL,
+		course_code VARCHAR(4) NOT NULL,
 		preference NUMBER DEFAULT 0,
 		PRIMARY KEY (user_id, form_id, course_code)
 	);
