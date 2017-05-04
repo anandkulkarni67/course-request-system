@@ -1,35 +1,32 @@
 CREATE OR REPLACE PACKAGE BODY "PACKAGE_CRS"
 AS
-  PROCEDURE create_qrcn_reg 
+	PROCEDURE create_qrcn_reg 
 		(
-			form_id IN NUMBER
+			formId IN NUMBER
 		)
 	AS
 		l_reginfo CQ_NOTIFICATION$_REG_INFO;
 		l_cursor  SYS_REFCURSOR;
 		l_regid   NUMBER;
 	BEGIN
-		-- construct registration information object.
+
 		l_reginfo := cq_notification$_reg_info (
 			'qrcn_callback',
 			dbms_cq_notification.qos_query,
 			0, 0, 0
 		);
-		
-		-- start new registration.
+
 		l_regid := dbms_cq_notification.new_reg_start(l_reginfo);
 
 		OPEN l_cursor FOR
-			SELECT dbms_cq_notification.cq_notification_queryid, USER_ID, PREFERENCE
+			SELECT dbms_cq_notification.cq_notification_queryid, USER_ID, COURSE_CODE, PREFERENCE
 			FROM STUDENT_PREFERENCES 
-			WHERE FORM_ID = form_id;        
+			WHERE FORM_ID = formId;        
 		CLOSE l_cursor;    
 		  
-		-- end registration.  
 		dbms_cq_notification.reg_end; 
-		
-		-- create an mapping between reg_id and form_id for future use.
-		INSERT INTO QRCN_REGISTRATION VALUES(form_id, l_regid);
+
+		INSERT INTO QRCN_REGISTRATION VALUES(formId, l_regid);
 
 	END create_qrcn_reg;
 	
@@ -40,26 +37,24 @@ AS
 	AS
 		l_req  UTL_HTTP.REQ;
 		l_resp UTL_HTTP.RESP;
-		form_id QRCN_REGISTRATION.FORM_ID%TYPE;
+		formId QRCN_REGISTRATION.FORM_ID%TYPE;
 		v_url VARCHAR2(1000);
 	BEGIN
-		UPDATE TEST SET form_id = form_id;
-		-- fetch form_id whose preferences are updated by a user.
-		SELECT form_id INTO form_id 
+		SELECT form_id INTO formId 
 		FROM QRCN_REGISTRATION
 		WHERE registration_id = ntfnds.REGISTRATION_ID;
-		
-		v_url := 'http://localhost:3000/changeNotification?formId=' || form_id;
-				
+
+		v_url := 'http://localhost:3000/changeNotification?formId=' || formId;
+
+		UPDATE TEST SET MESSAGE = v_url;
+
 		l_req := utl_http.begin_request(
 		  url    => v_url,
 		  method => 'GET'
 		);
-		
-		-- call 'changeNotificaion' service to fetch current data and notify online users about the change.
+
 		l_resp := utl_http.get_response(r => l_req);
 		utl_http.end_response(r => l_resp);
-	
 	END qrcn_callback;
 	
 	FUNCTION create_form 
@@ -88,6 +83,7 @@ AS
 			form_id IN NUMBER
 		)
 	IS
+	
 		reg_id QRCN_REGISTRATION.REGISTRATION_ID%TYPE;
 	BEGIN
 	
