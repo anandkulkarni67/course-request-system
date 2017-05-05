@@ -197,7 +197,7 @@ module.exports.submitForm = function(userPreferences) {
 					if(formSubmissionStatus.isNew) {
 						studentPreferenceQuery = "INSERT INTO STUDENT_PREFERENCES VALUES(:userId, :formId, :courseCode, :preference)";						
 					} else {
-						studentPreferenceQuery = "UPDATE STUDENT_PREFERENCES SET PREFERENCE = :preference WHERE USER_ID = :userId AND FORM_ID = :formId AND COURSE_CODE = :courseCode";						
+						studentPreferenceQuery = "UPDATE STUDENT_PREFERENCES SET COURSE_CODE = :courseCode WHERE USER_ID = :userId AND FORM_ID = :formId AND PREFERENCE = :preference";
 					}					
 					userPreferences.preferences.forEach(function(preference) {
 					db.doExecute(
