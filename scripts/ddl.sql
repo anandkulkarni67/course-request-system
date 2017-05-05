@@ -58,7 +58,7 @@ CREATE TABLE STUDENT_PREFERENCES
 		form_id NUMBER REFERENCES forms ON DELETE CASCADE,   
 		course_code VARCHAR(4) NOT NULL,
 		preference NUMBER DEFAULT 0,
-		PRIMARY KEY (user_id, form_id, course_code)
+		PRIMARY KEY (user_id, form_id, course_code, preference)
 	);
 	
 CREATE TABLE QRCN_REGISTRATION
