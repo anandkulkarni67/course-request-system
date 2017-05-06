@@ -2,7 +2,7 @@ var login = require('../login');
 var crypto = require('crypto');
 
 module.exports = function (app) {
-	app.get('/login', function(request, response) {		
+	app.get('/index', function(request, response) {		
 		response.render('login.html', {
 			username: '',
 			password: '',
@@ -41,4 +41,18 @@ module.exports = function (app) {
 				response.render('error.html');
 			});
 	});	
+
+	app.get('/logout', function(request, response) {
+		request.session.destroy();
+		response.redirect('/index');
+	});
+
+	app.get('/home', function(request, response) {
+		var user = request.session.user;		
+		if(user.ROLE === 'coordinator') {												
+			response.redirect('/manageForms');
+		} else {
+			response.redirect('/students');
+		}		
+	});
 }
