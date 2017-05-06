@@ -19,23 +19,29 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </header>						
 <body>
+	<div class="uk-grid uk-badge-success header">
+		<div class="uk-width-medium-1-10">
+			<a href="http://localhost:3000/home" class="uk-margin-small-left"><i class="uk-icon-home"></i>&nbsp;Home</a>
+		</div>
+		<div class="uk-width-medium-8-10 uk-text-center">
+			Course Request System
+		</div>
+		<div class="uk-width-medium-1-10">
+			<a href="http://localhost:3000/logout" class="uk-align-right uk-margin-right"><i class="uk-icon-mail-forward"></i>&nbsp;Logout</a>
+		</div>
+	</div>
 	<div class="uk-margin-large-top uk-width-medium-8-10 uk-container-center">
-		<div class="uk-grid">
-			<div class ="uk-width-medium-1-1">
-				<div class="uk-badge uk-badge-success uk-align-center"><h1><%=formDetails.TITLE%></h1></div>
+		<div class="uk-grid aa-back-glass">
+			<div class ="uk-width-medium-1-1">				
+				<h1 class="uk-text-center"><%=formDetails.TITLE%></h1>				
+			</div>			
+			<div class ="uk-width-medium-1-2 uk-text-center">
+				<label>Number of Preferences : <%=formDetails.NO_PREFERENCES%></label>
 			</div>
-		</div>
-		<div class="uk-grid uk-grid-divider">
-			<div class ="uk-width-medium-1-3 uk-text-center">
-				<label>Number of Preferences : </label><input id="noPrefs" value="<%=formDetails.NO_PREFERENCES%>" disabled class="uk-text-center"/>
-			</div>
-			<div class ="uk-width-medium-1-3 uk-text-center">
-				<label>Deadline : </label><input value="<%=new Date(formDetails.END_TIME).toLocaleString()%>" disabled class="uk-text-center"/>
-			</div>
-			<div class ="uk-width-medium-1-3 uk-text-center">
-				<label>Number of Responses : </label><input value="<%=formDetails.NO_RESP%>" disabled class="uk-text-center"/>
-			</div>
-		</div>
+			<div class ="uk-width-medium-1-2 uk-text-center">
+				<label>Deadline : <%=new Date(formDetails.END_TIME).toLocaleString()%></label>
+			</div>			
+		</div>		
 		<div class="uk-grid uk-grid-divider">
 			<div class ="uk-width-medium-1-1 uk-text-center">
 				<input type="submit" class="button" value="Show Statistics" id="showStats" onclick="drawCharts(<%=formDetails.FORM_ID%>)"/>
@@ -107,15 +113,5 @@
 			        </li>
 		      </ul>
 	    </div>
-
-		<!--<div class="uk-width-medium-1-1" style="width: 900px; border:solid 2px;">
-			<div id="myPieChart"/>
-		</div>
-		<div class="uk-width-medium-1-1" style="width: 900px; border:solid 2px">
-			<div id="myPieChart1"/>
-		</div>
-		<div class="uk-width-medium-1-1" style="width: 900px; border:solid 2px">
-			<div id="myPieChart2"/>
-		</div>-->
 	</div>	
 </body>

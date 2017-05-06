@@ -121,7 +121,7 @@ var fetchRequestsDistributionData = function(formId) {
 
 var fetchFormDetails = function(formId) {
 	return new Promise( function (resolve, reject) {
-		var createFormQuery = "SELECT f.form_id, f.title, f.no_preferences, f.creation_date, f.start_time, f.end_time, COUNT(DISTINCT sp.USER_ID) as NO_RESP FROM FORMS f, STUDENT_PREFERENCES sp WHERE f.FORM_ID = :formId AND f.FORM_ID = sp.FORM_ID GROUP BY f.form_id, f.title, f.no_preferences, f.creation_date, f.start_time, f.end_time";
+		var createFormQuery = "SELECT f.form_id, f.title, f.no_preferences, f.creation_date, f.start_time, f.end_time FROM FORMS f WHERE f.FORM_ID = :formId";
 		db.doConnect().then( function (connection) {		
 			db.doExecute(
 				connection, createFormQuery
