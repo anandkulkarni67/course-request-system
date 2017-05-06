@@ -55,3 +55,11 @@ input.focus {
     box-shadow: 2px 2px 2px gray;
     border-radius: 10px;
 }
+
+.header {	
+	min-height: 30px;
+    height: auto;
+    overflow: auto;	
+	line-height: 30px;
+  	text-align: center;
+}

@@ -69,7 +69,7 @@ function clearForm() {
 function updateCourseSelection(val, cid) {
 	var rowId = 'rowId_' + cid;
 	if(alreadyExists(rowId)) {
-		alert('Duplicate Entry');
+		UIkit.notify('<i class=\'uk-icon-small uk-icon-check\'></i> ' + val + ' is already selected.', {status:'warning', pos:'bottom-right'});
 	} else {
     	var row = "<tr id=" + rowId + " data-uid= " + cid + " >";
 			row += "<td>";
@@ -105,13 +105,14 @@ function displayForms() {
 					row += "<img class='uk-comment-avatar' src='./images/form.png' width='80' height='80' alt=''>";
 					row += "</div>";
 					row += "<div class='uk-width-expand'>";
-					row += "<h4 class='uk-comment-title'>" + form.TITLE + "</h4>";
-					row += "<div class='uk-position-top-right uk-position-relative uk-margin-right'>";
-					row += "<a title='Remove' data-uk-tooltip='{pos:'bottom'}' class='uk-icon-close uk-align-right' onclick = 'removeForm("+ rowId +")'></a>";
-				 	row += "<a title='Expand/Collapse' data-uk-tooltip='{pos:'bottom'}' class='uk-icon-expand uk-align-right' id='form-details-toggle-" + rowId + "'></a>";
-				 	row += "<a title='Copy' data-uk-tooltip='{pos:'bottom'}' class='uk-icon-copy uk-align-right' onclick ='copyForm(" + rowId + ")'></a>";				 	
-				 	row += "<a title='dashboard' data-uk-tooltip='{pos:'bottom'}' class='uk-icon-dashboard  uk-align-right' href='http://localhost:3000/dashboard?formId=" + form.FORM_ID + "'></a>";
+					row += "<h4 class='uk-comment-title'>" + form.TITLE;
+					row += "<div class='uk-button-group uk-align-right'>";
+				 	row += "<a title='dashboard' data-uk-tooltip='{pos:'bottom'}' class='uk-button' href='http://localhost:3000/dashboard?formId=" + form.FORM_ID + "'><i class='uk-icon-dashboard'></i></a>";
+				 	row += "<a title='Copy' data-uk-tooltip='{pos:'bottom'}' class='uk-button' onclick ='copyForm(" + rowId + ")'><i class='uk-icon-copy'></i></a>";
+				 	row += "<a title='Expand/Collapse' data-uk-tooltip='{pos:'bottom'}' class='uk-button' id='form-details-toggle-" + rowId + "'><i class='uk-icon-expand'></i></a>";
+					row += "<a title='Remove' data-uk-tooltip='{pos:'bottom'}' class='uk-button' onclick = 'removeForm("+ rowId +")'><i class='uk-icon-close'></i></a>";
 				 	row += "</div>";
+				 	row += "</h4>";
 					row += "<div class='uk-comment-meta'>";
 					row += "<div>";
 					row += "<label class='uk-text-bold'><i class='uk-icon-calendar'></i> &nbsp &nbsp" + creation_time.toLocaleString() + "</label>";

@@ -32,6 +32,7 @@ module.exports = function(app, socket) {
 	});
 	
 	app.get('/dashboard', function (request, response) {
+		console.log(request.query.formId);
 		dashboard.fetchFormDetails(request.query.formId).then (function (details) {
 			response.render('dashboard.html', {
 				formDetails : details

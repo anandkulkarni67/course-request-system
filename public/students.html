@@ -1,118 +1,138 @@
 <!DOCTYPE html>
 <html>
-<header>
-	<title>Student Home</title>
-	<link rel="stylesheet" type="text/css" href="/css/uikit.min.css">        
-    <link rel="stylesheet" type="text/css" href="/css/app.css">
-    <link rel="stylesheet" href="/css/components/notify.css">        
-    <script src="/js/jquery-3.1.1.min.js"></script>    
-    <script src="/js/uikit.min.js"></script>
-    <script src="/js/components/notify.js"></script>        
-    <script src="/js/app/applicationConstants.js"></script>
-    <script src="/js/app/students.js"></script>
-    <style type="text/css">
-    	#preferenceTable {    		
-        		width: 90%;
-        		margin: 0 auto;        		
-        	}  
-        .disableContent {
-		    pointer-events: none;
-		    opacity: 0.4;
-		}
-    </style>
-</header>
-<body>		
-	<div class="uk-margin-large-top uk-width-medium-8-10 uk-container-center">
-		<div class="uk-grid">
-            <div class="uk-width-medium-3-10">
-                <div class="uk-width-1-1 uk-text-center">
-                <h2 class="aa-back-glass">Forms</h2>
-            	</div> 
-                <ul class="uk-nav uk-nav-default uk-list uk-list-line" data-uk-switcher="connect: '#formsList'">
-	                <% forms.forEach(function (form) { %>
-	                	<li>
-							<article class="uk-comment uk-margin">
-							    <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
-							        <div class="uk-width-auto">
-							            <img class="uk-comment-avatar" src='./images/form.png' width='20' height='20' alt="">
-							        </div>
-							        <div class="uk-width-expand">
-							            <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#"><%=form.TITLE%></a></h4>
-							            <ul class="uk-comment-meta uk-margin-remove-top">
-							                <li>Deadline date: <%=form.END_TIME.toLocaleString()%></li>
-							                <% if(typeof form.SUBMISSION_DATE !== 'undefined') { %>
-							                	<li>Last Submitted on: <%=form.SUBMISSION_DATE.toLocaleString()%></li>
-							                <% } %> 
-							            </ul>
-							        </div>
-							    </header>						    
-							</article>
-						</li>
-					<% }); %>		            
-		        </ul>
-            </div>
-            <div class="uk-width-medium-7-10">
-                 <ul id="formsList" class="uk-switcher">
-		            <% 	forms.forEach(function (form) { 
-		            	var no_prefs = form.NO_PREFERENCES; %>
-	                	<li>
-		                		<% var today = new Date();		
-		                		var end_time = new Date(form.END_TIME);                		
-		                		if(today.getTime() < end_time) { %>
-		                			<article id="<%=form.FORM_ID%>" class="uk-comment uk-margin container-bottom-shadow">	
-					   			<% } else { %>
-					   				<article id="<%=form.FORM_ID%>" class="uk-comment uk-margin container-bottom-shadow disableContent">
-					   			<% } %>  	                			
-								<h4 class="uk-text-center">My Preferences</h4>
-								<table id="preferenceTable" class="uk-table uk-table-striped uk-table-condensed uk-width-medium-9-10">
-								    <thead>
-								        <tr>
-								        	<th>Courses</th>
-											<% var i = 0;
-											for(i = 0; i < no_prefs; i++) { %>
-											   	<th class='uk-text-center'>Preference <%=i+1%></th>
-											<% } %>
-								        </tr>
-								    </thead>
-								    <tbody>
-								    	<% form.courses.forEach( function (course) { %>
-								    		<tr>
-								            	<td><%=course.COURSE_CODE%><span>-</span><%=course.TITLE%></td>
-								            	<% var i = 0;
-												for(i = 0; i < no_prefs; i++) { %>													
-												   	<td class="uk-text-center">
-												   		<% 	if(typeof course.PREFERENCE !== 'undefined') {
-												   				if(course.PREFERENCE === i + 1) { %>
-												   				<input type="radio" id="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>_<%=i+1%>" name="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>" data-uid="<%=course.COURSE_CODE%>_<%=i+1%>" checked onclick="resetPrefs(this)" />
-													   		<% } else { %>
-													   			<input type="radio" id="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>_<%=i+1%>" name="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>" data-uid="<%=course.COURSE_CODE%>_<%=i+1%>" onclick="resetPrefs(this)" />
-													   		<% }
-													   		} %>
-												   	</td>
+	<head>
+		<title>Student Home</title>
+		<link rel="stylesheet" type="text/css" href="/css/uikit.min.css">        
+	    <link rel="stylesheet" type="text/css" href="/css/app.css">
+	    <link rel="stylesheet" type="text/css" href="/css/aakit.css">
+	    <link rel="stylesheet" href="/css/components/notify.css">        
+	    <script src="/js/jquery-3.1.1.min.js"></script>    
+	    <script src="/js/uikit.min.js"></script>
+	    <script src="/js/aakit.js"></script>	    
+	    <script src="/js/components/notify.js"></script>        
+	    <script src="/js/app/applicationConstants.js"></script>
+	    <script src="/js/app/students.js"></script>
+	    <style type="text/css">
+	    	#preferenceTable {    		
+	        		width: 90%;
+	        		margin: 0 auto;        		
+	        	}  
+	        .disableContent {
+			    pointer-events: none;
+			    opacity: 0.4;
+			}
+			.form-details-container:hover {
+    			background-color: rgba(0,0,0,0.1);
+    			opacity: 0.4;
+			}
+	    </style>
+	</head>
+	<body>			
+		<div class="uk-grid uk-badge-success header">
+			<div class="uk-width-medium-1-10">
+				<a href="http://localhost:3000/home" class="uk-margin-small-left"><i class="uk-icon-home"></i>&nbsp;Home</a>
+			</div>
+			<div class="uk-width-medium-8-10 uk-text-center">
+				Course Request System
+			</div>
+			<div class="uk-width-medium-1-10">
+				<a href="http://localhost:3000/logout" class="uk-align-right uk-margin-right"><i class="uk-icon-mail-forward"></i>&nbsp;Logout</a>
+			</div>
+		</div>		
+		<div class="uk-margin-large-top uk-width-medium-8-10 uk-container-center">
+			<div class="uk-grid">
+	            <div class="uk-width-medium-3-10">
+	                <div class="uk-width-1-1 uk-text-center">
+	                	<h2 class="aa-back-glass">Forms</h2>
+	            	</div> 
+	                <ul class="uk-nav uk-nav-default uk-list uk-list-line" data-uk-switcher="connect: '#formsList'">
+		                <% forms.forEach(function (form) { %>
+		                	<li>
+								<article class="uk-comment uk-margin form-details-container">
+								    <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+								        <div class="uk-width-auto">
+								            <img class="uk-comment-avatar" src='./images/form.png' width='20' height='20' alt="">
+								        </div>
+								        <div class="uk-width-expand">
+								            <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#"><%=form.TITLE%></a></h4>								            
+								            <ul class="uk-comment-meta uk-margin-remove-top">
+								                <li>Deadline date: <%=form.END_TIME.toLocaleString()%></li>
+								                <% if(typeof form.SUBMISSION_DATE !== 'undefined') { %>
+								                	<li>Last Submitted on: <%=form.SUBMISSION_DATE.toLocaleString()%></li>
+								                <% } %> 
+								            </ul>								            
+								        </div>							        
+								    </header>						    
+								</article>
+							</li>
+						<% }); %>		            
+			        </ul>
+	            </div>
+	            <div class="uk-width-medium-7-10">
+	                 <ul id="formsList" class="uk-switcher">
+			            <% 	forms.forEach(function (form) { 
+			            	var no_prefs = form.NO_PREFERENCES; %>
+		                	<li>
+			                		<% var today = new Date();		
+			                		var end_time = new Date(form.END_TIME);                		
+			                		if(today.getTime() < end_time) { %>
+			                			<article id="<%=form.FORM_ID%>" class="uk-comment uk-margin container-bottom-shadow">	
+						   			<% } else { %>
+						   				<article id="<%=form.FORM_ID%>" class="uk-comment uk-margin container-bottom-shadow disableContent">
+						   			<% } %>																			
+									<h4 class="uk-text-center aa-back-glass">My Preferences
+										<a title="dashboard" data-uk-tooltip="{pos:'bottom'}" class="uk-align-right uk-margin-right" href="http://localhost:3000/dashboard?formId=<%=form.FORM_ID%>">
+										<i class="uk-icon-dashboard uk-icon-medium uk-icon-button"></i></a>
+									</h4>
+									<table id="preferenceTable" class="uk-table uk-table-striped uk-table-condensed uk-width-medium-9-10">
+									    <thead>
+									        <tr>
+									        	<th>Courses</th>
+												<% var i = 0;
+												for(i = 0; i < no_prefs; i++) { %>
+												   	<th class='uk-text-center'>Preference <%=i+1%></th>
 												<% } %>
-								        	</tr>
-								    	<% }); %>
-								    </tbody>							    
-								</table>						    
-								<br/>
-								<div class="uk-grid">
-									<div class="uk-width-medium-2-6 uk-text-left">		
-							    		&nbsp;&nbsp;<a href="" class="uk-icon-chevron-left" data-uk-switcher-item="previous"></a>
-							    	</div>
-							    	<div class="uk-width-medium-2-6 uk-text-center">		
-							    		<input type="submit" id="submitForm" name="submitForm" value="SUBMIT" class="button uk-margin-small-bottom" onclick="submitForm(<%=form.FORM_ID%>)"/>		    
-							    	</div>
-							    	<div class="uk-width-medium-2-6 uk-text-right">									    	
-										<a href="" class="uk-icon-chevron-right" data-uk-switcher-item="next"></a>&nbsp;&nbsp;
-							    	</div>							    	
-							    </div>
-							    <br/>
-							</article>							
-						</li>
-					<% }); %>
-		        </ul>
-            </div>
-        </div>		
-	</div>
-</body>
+									        </tr>
+									    </thead>
+									    <tbody>
+									    	<% form.courses.forEach( function (course) { %>
+									    		<tr>
+									            	<td><%=course.COURSE_CODE%><span>-</span><%=course.TITLE%></td>
+									            	<% var i = 0;
+													for(i = 0; i < no_prefs; i++) { %>													
+													   	<td class="uk-text-center">
+													   		<% 	if(typeof course.PREFERENCE !== 'undefined') {
+													   				if(course.PREFERENCE === i + 1) { %>
+													   				<input type="radio" id="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>_<%=i+1%>" name="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>" data-uid="<%=course.COURSE_CODE%>_<%=i+1%>" checked onclick="resetPrefs(this)" />
+														   		<% } else { %>
+														   			<input type="radio" id="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>_<%=i+1%>" name="<%=form.FORM_ID%>_<%=course.COURSE_CODE%>" data-uid="<%=course.COURSE_CODE%>_<%=i+1%>" onclick="resetPrefs(this)" />
+														   		<% }
+														   		} %>
+													   	</td>
+													<% } %>
+									        	</tr>
+									    	<% }); %>
+									    </tbody>							    
+									</table>						    
+									<br/>
+									<div class="uk-grid">
+										<div class="uk-width-medium-2-6 uk-text-left">		
+								    		&nbsp;&nbsp;<a href="" class="uk-icon-chevron-left" data-uk-switcher-item="previous"></a>
+								    	</div>
+								    	<div class="uk-width-medium-2-6 uk-text-center">		
+								    		<input type="submit" id="submitForm" name="submitForm" value="SUBMIT" class="button uk-margin-small-bottom" onclick="submitForm(<%=form.FORM_ID%>)"/>
+								    	</div>
+								    	<div class="uk-width-medium-2-6 uk-text-right">									    	
+											<a href="" class="uk-icon-chevron-right" data-uk-switcher-item="next"></a>&nbsp;&nbsp;
+								    	</div>							    	
+								    </div>
+								    <br/>
+								</article>							
+							</li>
+						<% }); %>
+			        </ul>
+	            </div>
+	        </div>		
+		</div>
+	</body>
 </html>
