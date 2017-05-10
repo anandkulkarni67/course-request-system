@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/css/components/notify.css">
         <link rel="stylesheet" href="/css/components/datepicker.css">        
         <link rel="stylesheet" href="/css/components/autocomplete.css">
-        <script src="/js/jquery-3.1.1.min.js"></script>
+        <script src="/js/jquery-3.1.1.min.js"></script>        
         <script src="/js/uikit.min.js"></script>
         <script src="/js/aakit.js"></script>
         <script src="/js/components/notify.js"></script>
@@ -28,7 +28,7 @@
         		width: 90%;
         		margin: 0 auto;        		
         	}        	
-			.courseList-container {
+			.selected-courses-container {
 				height: 300px;
 				overflow: auto;
 			}
@@ -54,6 +54,8 @@
 			.list-type1{
 				width:90%;
 				margin:0 auto;
+				height: 300px;
+				overflow: auto;
 			}
 
 			.list-type1 ol{
@@ -235,7 +237,9 @@
 														<button id="addCourse" name="addCourse" class="button">ADD</button>
 													</div>
 													<h4 class="uk-text-center">List of selected courses</h4>
-				    								<table id="selectedListTable" align="center"></table>
+													<div class = "selected-courses-container">
+				    									<table id="selectedListTable" align="center"></table>
+				    								</div>
 				    								<br/>
 												</article>
 										    </li>

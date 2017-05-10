@@ -109,7 +109,7 @@ function displayForms() {
 					row += "<div class='uk-button-group uk-align-right'>";
 				 	row += "<a title='dashboard' data-uk-tooltip='{pos:'bottom'}' class='uk-button' href='http://localhost:3000/dashboard?formId=" + form.FORM_ID + "'><i class='uk-icon-dashboard'></i></a>";
 				 	row += "<a title='Copy' data-uk-tooltip='{pos:'bottom'}' class='uk-button' onclick ='copyForm(" + rowId + ")'><i class='uk-icon-copy'></i></a>";
-				 	row += "<a title='Expand/Collapse' data-uk-tooltip='{pos:'bottom'}' class='uk-button' id='form-details-toggle-" + rowId + "'><i class='uk-icon-expand'></i></a>";
+				 	row += "<a title='Expand/Collapse' data-uk-tooltip='{pos:'bottom'}' class='uk-button uk-icon' id='form-details-toggle-" + rowId + "'><i class='uk-icon-expand'></i></a>";
 					row += "<a title='Remove' data-uk-tooltip='{pos:'bottom'}' class='uk-button' onclick = 'removeForm("+ rowId +")'><i class='uk-icon-close'></i></a>";
 				 	row += "</div>";
 				 	row += "</h4>";
@@ -161,20 +161,20 @@ function displayForms() {
 			$("div[id*=form-details-container-]").each(function() {
 		        $(this).hide();
 		    });
-		    $("a[id*=form-details-toggle-]").each(function() {		    			
+		    $("a[id*=form-details-toggle-]").each(function() { 
 		    	$(this).on('click', function () {		    		
 		    		buttonId = $(this).attr('id');
 		    		containerId = buttonId.replace('toggle', 'container');			    		
 		    		$("#" + containerId).toggle('slow',
 			    		function () {
-			    			if ($("#" + buttonId).hasClass('uk-icon-expand')) {
-					        	$(this).show();
-				    			$("#" + buttonId).removeClass('uk-icon-expand');
-				    			$("#" + buttonId).addClass('uk-icon-compress');    
+			    			if ($("#" + buttonId).has('<i class=\'uk-icon-expand\'>')) {
+					        	$("div[id*=form-details-container-"+ buttonId +"]").show();
+				    			$("#" + buttonId).empty();
+				    			$("#" + buttonId).append('<i class=\'uk-icon-compress\'>');    
 					        } else {
-					            $(this).hide();
-				    			$("#" + buttonId).removeClass('uk-icon-compress');
-				    			$("#" + buttonId).addClass('uk-icon-expand');
+					            $("div[id*=form-details-container-"+ buttonId +"]").hide();
+				    			$("#" + buttonId).empty();
+				    			$("#" + buttonId).addClass('<i class=\'uk-icon-compress\'>');
 					        }		    			
 			    		}
 		    		);		

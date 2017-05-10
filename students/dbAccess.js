@@ -198,22 +198,30 @@ module.exports.submitForm = function(userPreferences) {
 						studentPreferenceQuery = "INSERT INTO STUDENT_PREFERENCES VALUES(:userId, :formId, :courseCode, :preference)";						
 					} else {
 						studentPreferenceQuery = "UPDATE STUDENT_PREFERENCES SET COURSE_CODE = :courseCode WHERE USER_ID = :userId AND FORM_ID = :formId AND PREFERENCE = :preference";
-					}					
-					userPreferences.preferences.forEach(function(preference) {
-					db.doExecute(
-						connection, studentPreferenceQuery
-						, {
-							userId: userPreferences.userId,
-							formId: userPreferences.formId,
-							courseCode: preference.courseCode,
-							preference: preference.preference
-						}).then(function (result) {
-							// logger								
-						}).catch( function (error) {
-							callback(error, null);
-						});				
-					});					
-					callback(null, 'success');
+					}
+					async.forEach(userPreferences.preferences ,
+						function (preference, callback) {
+							db.doExecute(
+								connection, studentPreferenceQuery
+								, {
+									userId: userPreferences.userId,
+									formId: userPreferences.formId,
+									courseCode: preference.courseCode,
+									preference: preference.preference
+								}).then(function (result) {
+									// logger
+									callback();
+								}).catch( function (error) {
+									callback(error);
+								});								
+							}, 
+							function(error) {
+								if(error) {					
+									callback(error, null);
+								} else {					
+									callback(null, "success");
+								}
+						});
 				}
 				], 
 				function (error, result) {
