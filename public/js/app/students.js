@@ -34,12 +34,12 @@ function getPreferences(formId) {
 }
 
 function resetPrefs(preference) {
-	var id = $(preference).attr('id');
-	var idSplit =  id.split("_");
-	var allCourses = $('article[id='+ idSplit[0] +']').find('input:radio[id*=_'+ idSplit[2] +']');
+	var id = $(preference).attr('id');	
+	var idSplit =  id.split("_");	
+	var allCourses = $('article[id='+ idSplit[0] +']').find('input:radio[id$=_'+ idSplit[2] +']');	
 	var counter = 0;
 	for(counter = 0; counter < allCourses.length; counter++) {
-		var course = $(allCourses).eq(counter);
+		var course = $(allCourses).eq(counter);	
 		if($(course).attr('id') !== id && $(course).is(':checked')) {
 			$(course).prop('checked', false);
 		}
